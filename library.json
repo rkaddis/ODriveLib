@@ -1,0 +1,27 @@
+"name": "ODriveArduino",
+"version": "1.0.0-apha",
+"description": "a library for ODrive motor controllers",
+"keywords": [
+    "odrive",
+    "motor",
+    "controller",
+    "library",
+    "brusless"
+],
+"repository": {
+    "type": "git",
+    "url": "https://github.com/ClementBoesmier/ODriveLib",
+},
+"author": {
+    "name": "Clement Boesmier"
+},
+"license": "GPL-3.0",
+"frameworks": [
+    "arduino",
+],
+"platforms": "*"
+"headers": [
+    "ODriveArduino.h",
+    "ODriveEnums.h"
+]
+//TODO: make examples
