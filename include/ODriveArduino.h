@@ -1,10 +1,9 @@
 
-#ifndef ODriveArduino_h
-#define ODriveArduino_h
+#ifndef ODRIVE_ARDUINO_H
+#define ODRIVE_ARDUINO_H
 
 #include "Arduino.h"
 #include "ODriveEnums.h"
-
 class ODriveArduino {
 private:
     /**
@@ -25,7 +24,7 @@ public:
      *
      * @param[in] serial The serial port to use to communicate with the ODrive
      */
-    ODriveArduino(Stream& serial);
+    ODriveArduino(const Stream& serial);
 
     /**
      * @brief Set the Position of a motor
@@ -110,4 +109,4 @@ public:
     bool runState(int axis, int requested_state, bool wait_for_idle, float timeout = 10.0f);
 };
 
-#endif //ODriveArduino_h
+#endif  // ODRIVE_ARDUINO_H
