@@ -1,8 +1,10 @@
 // includes
+#include "ODriveArduino.h"
+
 #include <Arduino.h>
 #include <HardwareSerial.h>
 #include <SoftwareSerial.h>
-#include <ODriveArduino.h>
+
 // Printing with stream operator helper functions
 template<class T> inline Print& operator <<(Print& obj, T arg) { obj.print(arg);    return obj; }
 template<>        inline Print& operator <<(Print& obj, float arg) { obj.print(arg, 4); return obj; }
@@ -39,7 +41,7 @@ SoftwareSerial odrive_serial(8, 9);
 // ODrive object
 ODriveArduino odrive(odrive_serial);
 
-void setup() {
+void setup() {  // cppcheck-suppress unusedFunction
   // ODrive uses 115200 baud
   odrive_serial.begin(115200);
 
@@ -54,8 +56,8 @@ void setup() {
   // You can of course set them different if you want.
   // See the documentation or play around in odrivetool to see the available parameters
   for (int axis = 0; axis < 2; ++axis) {
-    odrive_serial << "w axis" << axis << ".controller.config.vel_limit " << 10.0f << '\n';
-    odrive_serial << "w axis" << axis << ".motor.config.current_lim " << 11.0f << '\n';
+    odrive_serial << "w axis" << axis << ".controller.config.vel_limit " << 10.0F << '\n';
+    odrive_serial << "w axis" << axis << ".motor.config.current_lim " << 11.0F << '\n';
     // This ends up writing something like "w axis0.motor.config.current_lim 10.0\n"
   }
 
@@ -66,7 +68,7 @@ void setup() {
   Serial.println("Send the character 'p' to read motor positions in a 10s loop");
 }
 
-void loop() {
+void loop() {  // cppcheck-suppress unusedFunction
 
   if (Serial.available()) {
     char c = Serial.read();
@@ -78,29 +80,28 @@ void loop() {
 
       requested_state = AXIS_STATE_MOTOR_CALIBRATION;
       Serial << "Axis" << c << ": Requesting state " << requested_state << '\n';
-      if (!odrive.runState(motornum, requested_state, true)) return;
+      if (!odrive.runState(motornum, requested_state, true)) { return; }
 
       requested_state = AXIS_STATE_ENCODER_OFFSET_CALIBRATION;
       Serial << "Axis" << c << ": Requesting state " << requested_state << '\n';
-      if (!odrive.runState(motornum, requested_state, true, 25.0f)) return;
+      if (!odrive.runState(motornum, requested_state, true, 25.0F)) { return; }
 
       requested_state = AXIS_STATE_CLOSED_LOOP_CONTROL;
       Serial << "Axis" << c << ": Requesting state " << requested_state << '\n';
-      if (!odrive.runState(motornum, requested_state, false /*don't wait*/)) return;
+      if (!odrive.runState(motornum, requested_state, false /*don't wait*/)) { return; }
     }
 
     // Sinusoidal test move
     if (c == 's') {
       Serial.println("Executing test move");
-      for (float ph = 0.0f; ph < 6.28318530718f; ph += 0.01f) {
-        float pos_m0 = 2.0f * cos(ph);
-        float pos_m1 = 2.0f * sin(ph);
+      for (float ph = 0.0F; ph < TWO_PI; ph += 0.01F) {
+        float pos_m0 = 2.0F * cos(ph);
+        float pos_m1 = 2.0F * sin(ph);
         odrive.setPosition(0, pos_m0);
         odrive.setPosition(1, pos_m1);
         delay(5);
       }
     }
-
     // Read bus voltage
     if (c == 'b') {
       odrive_serial << "r vbus_voltage\n";
@@ -109,8 +110,8 @@ void loop() {
 
     // print motor positions in a 10s loop
     if (c == 'p') {
-      static const unsigned long duration = 10000;
-      unsigned long start = millis();
+      static const uint32_t duration = 10000;
+      uint32_t start = millis();
       while (millis() - start < duration) {
         for (int motor = 0; motor < 2; ++motor) {
           Serial << odrive.getPosition(motor) << '\t';
