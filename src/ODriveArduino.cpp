@@ -59,11 +59,10 @@ bool ODriveArduino::runState(int axis, int requested_state, bool wait_for_idle, 
 
 String ODriveArduino::readString() {
     String str = "";
-    static const uint32_t timeout = 1000;
     uint32_t timeout_start = millis();
     for (;;) {
         while (!this->serial_.available()) {
-            if (millis() - timeout_start >= timeout) {
+            if (millis() - timeout_start >= this->timeout) {
                 return str;
             }
         }
@@ -74,4 +73,13 @@ String ODriveArduino::readString() {
         str += c;
     }
     return str;
+}
+
+void ODriveArduino::setTimeout(int timeout) {
+    if(timeout > 0) {
+        this->timeout = timeout;
+    }
+    else {
+        this->timeout = 1000;
+    }
 }

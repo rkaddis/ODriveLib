@@ -18,6 +18,11 @@ private:
      */
     String readString();
 
+    /*
+        @brief The timeout to wait for serial rx, in millis.
+    */
+    int timeout = 1000;
+
 public:
     /**
      * @brief Construct a new ODriveArduino object
@@ -107,6 +112,13 @@ public:
      * @return false the state was not reached within the timeout.
      */
     bool runState(int axis, int requested_state, bool wait_for_idle, float timeout = 10.0f);
+
+    /*
+    @brief set the timeout to wait for serial rx, in millis.
+    @param[in] timeout the timeout, in millis.
+    
+    */
+    void setTimeout(int timeout);
 };
 
 #endif  // ODRIVE_ARDUINO_H
